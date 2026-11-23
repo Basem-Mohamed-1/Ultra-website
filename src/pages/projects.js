@@ -1,23 +1,25 @@
 import '../styles.css';
 import { projects } from '../data/projects.js';
 import { imageSlots } from '../data/site.js';
+import { imageDimensionAttributes } from '../data/image-dimensions.js';
 import { arrow, headerMarkup, footerMarkup, whatsappButtonMarkup, stickyWhatsAppMarkup, contactFormMarkup, initSiteShell } from '../components/site-shell.js';
 
 const cards = projects.map((project, index) => `
   <article class="portfolio-card reveal">
     <div class="portfolio-image image-slot">
-      <img src="${project.image}" alt="" loading="lazy" onerror="this.style.display='none'">
+      <img src="${project.image}" alt="${project.imageAlt}" ${imageDimensionAttributes(project.image)} loading="lazy" onerror="this.style.display='none'">
       <span class="project-index">${String(index + 1).padStart(2, '0')}</span>
       <span class="image-slot-label">PROJECT PHOTO ${String(index + 1).padStart(2, '0')}</span>
     </div>
     <div class="portfolio-card-copy"><h3>${project.name}</h3><p>${project.type}</p></div>
   </article>`).join('');
 
-document.querySelector('#app').innerHTML = `
+const appRoot = document.querySelector('#app');
+appRoot.innerHTML = `
   ${headerMarkup('projects')}
   <main class="portfolio-page">
     <section class="portfolio-hero">
-      <div class="portfolio-hero-image image-slot"><img src="${imageSlots.projectsHero}" alt="" onerror="this.style.display='none'"><div class="portfolio-hero-shade"></div></div>
+      <div class="portfolio-hero-image image-slot"><img src="${imageSlots.projectsHero}" alt="" ${imageDimensionAttributes(imageSlots.projectsHero)} fetchpriority="high" onerror="this.style.display='none'"><div class="portfolio-hero-shade"></div></div>
       <div class="portfolio-hero-copy"><p class="eyebrow"><span class="eyebrow-line"></span>ULTRA · SELECTED WORK</p><h1>Projects built<br>to work better.</h1><p>Explore the places and systems made possible through thoughtful MEP engineering.</p></div>
       <div class="page-hero-actions"><a class="portfolio-hero-link" href="#project-grid">Explore our projects ${arrow}</a>${whatsappButtonMarkup('Contact us on WhatsApp')}</div>
     </section>
@@ -26,11 +28,12 @@ document.querySelector('#app').innerHTML = `
       <div class="portfolio-heading"><h2>Selected <em>work.</em></h2><p>Each project below is a placeholder for Ultra’s project photography and details.</p></div>
       <div class="portfolio-grid">${cards}</div>
     </section>
-    <section class="portfolio-contact section-pad"><div class="portfolio-contact-layout"><div class="portfolio-contact-copy"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Let's build<br><em>what's next.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div></section>
+    <section class="portfolio-contact section-pad"><div class="portfolio-contact-layout"><div class="portfolio-contact-copy"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Start Your Project<br><em>with Ultra.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div></section>
   </main>
   ${stickyWhatsAppMarkup()}
   ${footerMarkup('projects')}
 `;
+appRoot.classList.remove('is-prerendered');
 
 initSiteShell();
 const reveal = new IntersectionObserver(entries => entries.forEach(entry => {

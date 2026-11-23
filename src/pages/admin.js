@@ -32,7 +32,7 @@ async function api(path, options = {}) {
 }
 
 function brandMarkup() {
-  return `<a class="admin-brand" href="/admin" aria-label="Ultra dashboard home"><span class="admin-brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>ULTRA<small>MEP ENGINEERING</small></span></a>`;
+  return `<a class="admin-brand" href="/admin" aria-label="Ultra dashboard home"><img class="admin-brand-logo" src="/images/ultra-logo.svg" alt="Ultra MEP Engineering"></a>`;
 }
 
 function renderLogin(message = '') {

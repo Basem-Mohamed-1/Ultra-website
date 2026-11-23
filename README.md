@@ -65,13 +65,22 @@ The site remains a Vite multi-page application. A small Vite middleware maps cle
 | `/about` | `about.html` | About |
 | `/services` | `services.html` | Services |
 | `/projects` | `projects.html` | Projects |
+| `/blogs` | `blogs.html` | Blog index |
+| `/blogs/bathroom-kitchen-plumbing-installation` | `blogs-bathroom-kitchen-plumbing-installation.html` | Article |
+| `/blogs/ceiling-electrical-installation` | `blogs-ceiling-electrical-installation.html` | Article |
+| `/blogs/central-heating-systems` | `blogs-central-heating-systems.html` | Article |
+| `/blogs/electrical-load-distribution-boards` | `blogs-electrical-load-distribution-boards.html` | Article |
+| `/blogs/fire-alarm-system-design-installation` | `blogs-fire-alarm-system-design-installation.html` | Article |
+| `/blogs/vrf-air-conditioning-systems` | `blogs-vrf-air-conditioning-systems.html` | Article |
+| `/blogs/air-conditioning-piping-before-plastering` | `blogs-air-conditioning-piping-before-plastering.html` | Article |
+| `/blogs/electrical-infrastructure-works` | `blogs-electrical-infrastructure-works.html` | Article |
 | `/approach` | `approach.html` | Approach |
 | `/contact` | `index.html` | Opens the home page at the contact section |
 | `/admin` | `admin.html` | Admin dashboard |
 
 Old `.html` addresses redirect to their clean equivalent locally. Internal links use clean paths. The contact section remains part of the home page; `/contact` does not create a duplicate page.
 
-No production-host configuration is included yet. Once a host is selected, configure it to internally rewrite the clean paths above to the listed HTML files while leaving the browser URL unchanged. Also add permanent redirects from `/index.html`, `/about.html`, `/services.html`, `/projects.html`, `/approach.html`, `/contact.html`, and `/admin.html` to their clean paths. Make sure `/api/*`, `/assets/*`, `/images/*`, and other existing files are served before any page fallback, so backend requests and assets are not rewritten to HTML. The exact syntax and config filename depend on the host.
+No production-host configuration is included yet. Once a host is selected, configure it to internally rewrite the clean paths above to the listed HTML files while leaving the browser URL unchanged. Also add permanent redirects from `/index.html`, `/about.html`, `/services.html`, `/projects.html`, `/blogs.html`, `/approach.html`, `/contact.html`, and `/admin.html` to their clean paths. Make sure `/api/*`, `/assets/*`, `/images/*`, and other existing files are served before any page fallback, so backend requests and assets are not rewritten to HTML. The exact syntax and config filename depend on the host.
 
 ## Admin dashboard
 
@@ -85,7 +94,7 @@ npm run admin:create
 
 The command prompts for an email and a password (input hidden), confirms the password, hashes it with bcrypt, and stores only the hash in the `admin_users` table. Use a unique password at least 12 bytes long. Running the command again for the same email updates that account's password.
 
-With `npm run dev` and `npm run dev:server` running, open `http://localhost:5173/admin`. The dashboard uses an HTTP-only, SameSite strict session cookie and server-side SQLite session storage. Sessions expire after eight hours of inactivity. Admin APIs include login/session/logout, lead summary, paginated/searchable/filterable lead listing, lead details, status updates, and permanent lead deletion after a confirmation prompt. Existing leads receive the `New` status when the backend starts and migrates the database.
+With `npm run dev` and `npm run dev:server` running, open `http://localhost:5173/admin.html`. The dashboard uses an HTTP-only, SameSite strict session cookie and server-side SQLite session storage. Sessions expire after eight hours of inactivity. Admin APIs include login/session/logout, lead summary, paginated/searchable/filterable lead listing, lead details, and status updates. Existing leads receive the `New` status when the backend starts and migrates the database.
 
 In production, serve the admin page over HTTPS, configure the same `/api` origin or a trusted reverse proxy, provide a stable random `ADMIN_SESSION_SECRET`, and use persistent protected storage and backups for the SQLite database. Keep login rate limits enabled; add monitoring and account recovery procedures before opening the dashboard to production users. The admin page itself is not secret; access control is enforced by the backend APIs.
 

@@ -1,14 +1,15 @@
 import './styles.css';
 import { slides, services, imageSlots } from './data/site.js';
 import { projects } from './data/projects.js';
+import { imageDimensionAttributes, imageDimensions } from './data/image-dimensions.js';
 import { arrow, headerMarkup, footerMarkup, whatsappButtonMarkup, stickyWhatsAppMarkup, contactFormMarkup, initSiteShell } from './components/site-shell.js';
-const projectCards = () => projects.map((p, i) => `<article class="project-card"><div class="project-image image-slot"><img src="${p.image}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="project-index">${String(i + 1).padStart(2, '0')}</span><span class="image-slot-label">PROJECT PHOTO ${String(i + 1).padStart(2, '0')}</span><span class="project-open" aria-hidden="true">${arrow}</span></div><h3>${p.name}</h3><p>${p.type}</p></article>`).join('');
+const projectCards = () => projects.map((p, i) => `<article class="project-card" style="--project-delay:${i * 90}ms"><div class="project-image image-slot"><img class="project-lazy-image" src="${p.image}" alt="${p.imageAlt}" ${imageDimensionAttributes(p.image)} loading="lazy" onload="this.classList.add('is-loaded')" onerror="this.style.display='none'"><span class="project-index">${String(i + 1).padStart(2, '0')}</span><span class="image-slot-label">PROJECT PHOTO ${String(i + 1).padStart(2, '0')}</span><span class="project-open" aria-hidden="true">${arrow}</span></div><h3>${p.name}</h3><p>${p.type}</p></article>`).join('');
 
 document.querySelector('#app').innerHTML = `
   ${headerMarkup('home')}
   <main>
     <section class="hero" id="home" aria-roledescription="carousel" aria-label="Ultra introduction">
-      <div class="hero-media"><img src="${slides[0].image}" alt="${slides[0].alt}" onerror="this.style.display='none'" /></div><div class="hero-shade"></div>
+      <div class="hero-media"><img src="${slides[0].image}" alt="${slides[0].alt}" ${imageDimensionAttributes(slides[0].image)} fetchpriority="high" onerror="this.style.display='none'" /></div><div class="hero-shade"></div>
       <div class="hero-content">
         <p class="eyebrow"><span class="eyebrow-line"></span><span class="slide-eyebrow"></span></p>
         <h1 class="slide-title"></h1>
@@ -23,21 +24,23 @@ document.querySelector('#app').innerHTML = `
 
     <section class="intro section-pad" id="about">
       <div class="section-kicker"><span>01 / WHO WE ARE</span><span>ENGINEERED AROUND PEOPLE</span></div>
-      <div class="intro-card image-slot reveal"><img src="${imageSlots.intro}" alt="" loading="lazy" onerror="this.style.display='none'"><div class="intro-card-shade"></div><div class="intro-grid"><h2>We make buildings <em>work better.</em></h2><div class="intro-text"><p>Ultra is an MEP construction and engineering company delivering the essential systems that make spaces comfortable, safe, and ready for what’s next.</p><a class="text-link" href="/about">Get to know us ${arrow}</a></div></div><span class="image-slot-label">INTRO IMAGE · intro.jpg</span></div>
-      <div class="stats"><div><strong><span class="stat-value" data-target="18" data-digits="2">18</span><span>+</span></strong><small>YEARS OF EXPERIENCE</small></div><div><strong><span class="stat-value" data-target="120" data-digits="3">120</span><span>+</span></strong><small>PROJECTS DELIVERED</small></div><div><strong><span class="stat-value" data-target="4" data-digits="2">04</span></strong><small>CORE MEP DISCIPLINES</small></div><div><strong><span class="stat-value" data-target="1" data-digits="2">01</span></strong><small>CONNECTED TEAM</small></div></div>
+      <div class="intro-card image-slot reveal"><img src="${imageSlots.intro}" alt="" ${imageDimensionAttributes(imageSlots.intro)} loading="lazy" onerror="this.style.display='none'"><div class="intro-card-shade"></div><div class="intro-grid"><h2>One Team. One Vision.<br><em>Seamless Engineering.</em></h2><div class="intro-text"><p>Ultra is an MEP construction and engineering company delivering the essential systems that make spaces comfortable, safe, and ready for what’s next.</p><a class="text-link" href="/about">Get to know us ${arrow}</a></div></div><span class="image-slot-label">INTRO IMAGE · construction-site-engineer.webp</span></div>
     </section>
 
-    <section class="services section-pad" id="services"><div class="section-kicker"><span>02 / WHAT WE DO</span><span>ONE CONNECTED APPROACH</span></div><div class="services-head"><h2>Good engineering.<br><em>Seamless delivery.</em></h2><p>From the first drawing to the final switch-on, every detail is considered, coordinated, and cared for.</p></div>
-      <div class="service-grid">${services.map(s => `<article class="service-card image-slot"><img src="${s.image}" alt="" loading="lazy" onerror="this.style.display='none'"><div class="service-card-wash"></div><div class="service-card-copy"><span class="service-number">${s.number} / MEP SERVICES</span><h3>${s.title}</h3><p>${s.copy}</p><span class="service-card-arrow" aria-hidden="true">${arrow}</span></div><span class="image-slot-label">SERVICE IMAGE · ${s.image.split('/').pop()}</span></article>`).join('')}</div>
+    <section class="stats-section section-pad"><div class="stats"><div class="stat" data-value="18" data-suffix="+" aria-label="18 plus years of experience"><strong><span class="stat-value" data-target="18" data-digits="2"></span><span class="stat-suffix">+</span></strong><small>YEARS OF EXPERIENCE</small></div><div class="stat" data-value="120" data-suffix="+" aria-label="120 plus projects delivered"><strong><span class="stat-value" data-target="120" data-digits="3"></span><span class="stat-suffix">+</span></strong><small>PROJECTS DELIVERED</small></div><div class="stat" data-value="4" data-suffix="" aria-label="4 core MEP disciplines"><strong><span class="stat-value" data-target="4" data-digits="2"></span></strong><small>CORE MEP DISCIPLINES</small></div><div class="stat" data-value="1" data-suffix="" aria-label="1 connected team"><strong><span class="stat-value" data-target="1" data-digits="2"></span></strong><small>CONNECTED TEAM</small></div></div>
     </section>
 
-    <section class="feature" id="approach"><div class="feature-image image-slot"><img src="${imageSlots.feature}" alt="" loading="lazy" onerror="this.style.display='none'"/><span class="image-slot-label">APPROACH IMAGE · approach.jpg</span></div><div class="feature-copy"><div class="section-kicker"><span>03 / HOW WE WORK</span><span>BUILT ON CLARITY</span></div><p class="eyebrow"><span class="eyebrow-line"></span>OUR APPROACH</p><h2>Complex systems.<br><em>Clear thinking.</em></h2><p class="feature-body">Great MEP work is felt in the comfort of a room and the confidence of a client. Our teams bring disciplines together early, solve challenges openly, and stay accountable through every stage.</p><a class="text-link" href="#contact">Work with our team ${arrow}</a></div></section>
+    <section class="services section-pad" id="services"><div class="section-kicker"><span>02 / WHAT WE DO</span><span>ONE CONNECTED APPROACH</span></div><div class="services-head"><h2>Integrated Services.<br><em>Unified Project Delivery.</em></h2><p>From the first drawing to the final switch-on, every detail is considered, coordinated, and cared for.</p></div>
+      <div class="service-grid">${services.map(s => `<article class="service-card image-slot"><img src="${s.image}" alt="" ${imageDimensionAttributes(s.image)} loading="lazy" onerror="this.style.display='none'"><div class="service-card-wash"></div><div class="service-card-copy"><span class="service-number">${s.number} / MEP SERVICES</span><h3>${s.title}</h3><p>${s.copy}</p><span class="service-card-arrow" aria-hidden="true">${arrow}</span></div><span class="image-slot-label">SERVICE IMAGE · ${s.image.split('/').pop()}</span></article>`).join('')}</div>
+    </section>
 
-    <section class="clients section-pad" id="clients"><div class="section-kicker"><span>CLIENTS & PARTNERS</span><span>LOGOS TO BE ADDED</span></div><div class="client-grid">${imageSlots.clients.map((src,i) => `<div class="client-image image-slot"><img src="${src}" alt="" loading="lazy" onerror="this.style.display='none'"/><span class="image-slot-label">CLIENT LOGO 0${i+1}</span></div>`).join('')}</div></section>
+    <section class="feature" id="approach"><div class="feature-image image-slot"><img src="${imageSlots.feature}" alt="" ${imageDimensionAttributes(imageSlots.feature)} loading="lazy" onerror="this.style.display='none'"/><span class="image-slot-label">APPROACH IMAGE · technician-installing-mechanical-system.webp</span></div><div class="feature-copy"><div class="section-kicker"><span>03 / HOW WE WORK</span><span>BUILT ON CLARITY</span></div><p class="eyebrow"><span class="eyebrow-line"></span>OUR APPROACH</p><h2>Quality That Speaks<br><em>Through Every Detail.</em></h2><p class="feature-body">We uphold the highest standards of quality across every stage of our work, ensuring precision, consistency, and excellence in every detail.</p><a class="text-link" href="#contact">Work with our team ${arrow}</a></div></section>
 
-    <section class="projects section-pad" id="projects"><div class="section-kicker"><span>04 / SELECTED WORK</span><span>MADE TO MOVE LIFE FORWARD</span></div><div class="projects-heading"><h2>Spaces we help<br><em>bring to life.</em></h2><a class="text-link" href="/projects">View all projects ${arrow}</a></div><div class="project-carousel" role="region" aria-label="Selected projects" tabindex="0"><div class="project-track"><div class="project-track-group">${projectCards()}</div><div class="project-track-group" aria-hidden="true">${projectCards()}</div></div></div></section>
+    <section class="clients section-pad" id="clients" hidden><div class="section-kicker"><span>CLIENTS & PARTNERS</span><span>LOGOS TO BE ADDED</span></div><div class="client-grid">${imageSlots.clients.map((src,i) => `<div class="client-image image-slot"><img src="${src}" alt="" loading="lazy" onerror="this.style.display='none'"/><span class="image-slot-label">CLIENT LOGO 0${i+1}</span></div>`).join('')}</div></section>
 
-    <section class="contact section-pad" id="contact"><div class="section-kicker"><span>05 / START A CONVERSATION</span><span>CAIRO · EGYPT</span></div><div class="contact-layout"><div class="contact-inner"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Let's build<br><em>what's next.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div><div class="contact-orbit" aria-hidden="true"></div></section>
+    <section class="projects section-pad" id="projects"><div class="section-kicker"><span>04 / SELECTED WORK</span><span>MADE TO MOVE LIFE FORWARD</span></div><div class="projects-heading"><h2>A Diverse Portfolio.<br><em>A Proven Ability to Deliver</em></h2><a class="text-link" href="/projects">View all projects ${arrow}</a></div><div class="project-carousel" role="region" aria-label="Selected projects" tabindex="0"><div class="project-track"><div class="project-track-group">${projectCards()}</div><div class="project-track-group" aria-hidden="true">${projectCards()}</div></div></div></section>
+
+    <section class="contact section-pad" id="contact"><div class="section-kicker"><span>05 / START A CONVERSATION</span><span>CAIRO · EGYPT</span></div><div class="contact-layout"><div class="contact-inner"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Start Your Project<br><em>with Ultra.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div><div class="contact-orbit" aria-hidden="true"></div></section>
   </main>
   ${stickyWhatsAppMarkup()}
   ${footerMarkup('home')}
@@ -62,12 +65,17 @@ function showSlide(index, animate = true) {
   const hero = document.querySelector('.hero');
   if (animate) hero.classList.add('is-changing');
   window.setTimeout(() => {
-    title.innerHTML = slide.title.replace('\n', '<br>');
+    title.innerHTML = slide.title.split('\n').map(line => window.ultraTranslate?.(line) || line).join('<br>');
     const slideImage = media.querySelector('img');
     slideImage.src = slide.image;
     slideImage.alt = slide.alt;
-    document.querySelector('.slide-eyebrow').textContent = slide.eyebrow;
-    document.querySelector('.slide-copy').textContent = slide.description;
+    const dimensions = imageDimensions(slide.image);
+    if (dimensions) {
+      slideImage.width = dimensions.width;
+      slideImage.height = dimensions.height;
+    }
+    document.querySelector('.slide-eyebrow').textContent = window.ultraTranslate?.(slide.eyebrow) || slide.eyebrow;
+    document.querySelector('.slide-copy').textContent = window.ultraTranslate?.(slide.description) || slide.description;
     document.querySelector('.slide-count b').textContent = slide.number;
     dotButtons.forEach((dot, i) => { dot.setAttribute('aria-selected', String(i === active)); dot.classList.toggle('active', i === active); });
     hero.classList.remove('is-changing');
@@ -81,6 +89,12 @@ dotButtons.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i
 
 const projectCarousel = document.querySelector('.project-carousel');
 const projectTrack = document.querySelector('.project-track');
+const projectTrackGroup = projectTrack.querySelector('.project-track-group');
+const setProjectLoopDistance = () => {
+  projectTrack.style.setProperty('--project-loop-offset', `-${projectTrackGroup.getBoundingClientRect().width}px`);
+};
+setProjectLoopDistance();
+new ResizeObserver(setProjectLoopDistance).observe(projectTrackGroup);
 let projectDrag = null;
 projectCarousel.addEventListener('pointerdown', event => {
   if (event.pointerType === 'mouse' && event.button !== 0) return;
@@ -125,26 +139,21 @@ let statsCounted = false;
 function countStats() {
   if (statsCounted) return;
   statsCounted = true;
-  const values = [...document.querySelectorAll('.stat-value')];
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    values.forEach(value => { value.textContent = Number(value.dataset.target).toLocaleString('en-US').padStart(Number(value.dataset.digits), '0'); });
-    return;
-  }
-  values.forEach(value => { value.textContent = '0'.padStart(Number(value.dataset.digits), '0'); });
-  const duration = 1600;
-  const start = performance.now();
-  function frame(now) {
-    const finished = values.every((value, index) => {
-      const target = Number(value.dataset.target);
-      const digits = Number(value.dataset.digits);
-      const progress = Math.min(1, Math.max(0, (now - start - index * 110) / duration));
-      const eased = 1 - Math.pow(1 - progress, 3);
-      value.textContent = Math.floor(target * eased).toLocaleString('en-US').padStart(digits, '0');
-      return progress === 1;
-    });
-    if (!finished) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stats = [...document.querySelectorAll('.stats .stat')];
+  const digitStrip = '0123456789'.repeat(3);
+  stats.forEach((stat, statIndex) => {
+    const value = stat.querySelector('.stat-value');
+    const target = value.dataset.target.padStart(Number(value.dataset.digits), '0');
+    value.setAttribute('aria-hidden', 'true');
+    value.innerHTML = [...target].map((digit, digitIndex) => {
+      const landingIndex = 10 + Number(digit);
+      const delay = statIndex * 120 + digitIndex * 70;
+      return `<span class="odometer-digit" style="--roll-index:${landingIndex};--roll-delay:${delay}ms"><span class="odometer-strip">${[...digitStrip].map(number => `<span>${number}</span>`).join('')}</span></span>`;
+    }).join('');
+    if (reducedMotion) stat.classList.add('is-counted');
+    else requestAnimationFrame(() => stat.classList.add('is-counted'));
+  });
 }
 
 const reveal = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -153,7 +162,7 @@ const reveal = new IntersectionObserver(entries => entries.forEach(entry => {
   reveal.unobserve(entry.target);
 }), { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
 
-document.querySelectorAll('.intro, .services, .feature, .clients, .projects, .contact, .section-kicker, .intro-card, .intro-grid, .service-card, .feature-copy > *, .projects-heading, .project-card, .contact-inner')
+document.querySelectorAll('.intro, .services, .feature, .clients, .projects, .contact, .section-kicker, .intro-card, .intro-grid, .service-card, .feature-copy > *, .projects-heading, .contact-inner')
   .forEach(el => {
     if (el.closest('[aria-hidden="true"]')) return;
     el.classList.add(el.matches('section') ? 'section-reveal' : 'reveal');
@@ -165,5 +174,5 @@ const statsObserver = new IntersectionObserver(entries => {
     countStats();
     statsObserver.disconnect();
   }
-}, { threshold: 0.15 });
-statsObserver.observe(document.querySelector('.stats'));
+}, { threshold: 0.45, rootMargin: '0px 0px -18% 0px' });
+statsObserver.observe(document.querySelector('.stats-section'));

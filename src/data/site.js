@@ -1,52 +1,22 @@
 export const slides = [
-  {
-    eyebrow: 'Integrated MEP · Since 2006',
-    title: 'The systems behind\nbetter spaces.',
-    description: 'Engineering comfort, performance, and reliability into every place people live and work.',
-    image: '/images/hero-01.jpg',
-    alt: 'Modern glass office towers viewed from below',
-    number: '01',
-  },
-  {
-    eyebrow: 'Engineering with intent',
-    title: 'Built to perform.\nMade to last.',
-    description: 'From first coordination to final commissioning, we make complex building services work as one.',
-    image: '/images/hero-02.jpg',
-    alt: 'Contemporary architectural building in warm light',
-    number: '02',
-  },
-  {
-    eyebrow: 'A better built environment',
-    title: 'Precision in every\nconnection.',
-    description: 'Thoughtful MEP delivery that supports efficient buildings and the people who depend on them.',
-    image: '/images/hero-03.jpg',
-    alt: 'Bright modern office interior',
-    number: '03',
-  },
+  { eyebrow: 'Integrated MEP · Since 2006', title: 'Engineering Systems\nThat Power Every Building.', description: 'We deliver integrated Mechanical, Electrical, and Plumbing solutions that ensure performance, efficiency, and reliability across every stage of your project.', image: '/images/home-hero-ultra-site-engineer.webp', alt: 'Ultra worker installing building systems on site', number: '01' },
+  { eyebrow: 'Engineering with intent', title: 'Intelligent MEP Solutions.\nBuilt for Performance.', description: 'From system design to execution, we provide engineered MEP solutions that combine technical precision, energy efficiency, and seamless building integration.', image: '/images/electrical-cable-and-pipeline-systems.webp', alt: 'Industrial cable and pipeline systems', number: '02' },
+  { eyebrow: 'A better built environment', title: 'Engineering the Infrastructure\nBehind Every Great Project.', description: 'Ultra delivers comprehensive MEP services designed to meet demanding project requirements, ensuring dependable systems, operational efficiency, and lasting performance.', image: '/images/industrial-facility-installation.webp', alt: 'Modern industrial facility interior', number: '03' },
 ];
 
 export const services = [
-  { number: '01', title: 'Mechanical services', copy: 'Innovative and reliable engineering for integrated mechanical systems. We deliver high-quality solutions designed around efficiency, comfort, and dependable performance.', image: '/images/service-mechanical.jpg' },
-  { number: '02', title: 'Electrical services', copy: 'Power distribution, lighting, low current, and controls coordinated into safe, reliable systems that support every building.', image: '/images/service-electrical.jpg' },
-  { number: '03', title: 'Design & coordination', copy: 'Clear, buildable engineering from early design through BIM coordination, helping every discipline work together smoothly.', image: '/images/service-design.jpg' },
-  { number: '04', title: 'Testing & commissioning', copy: 'Careful testing, commissioning, and handover so each system performs as intended from the first day of operation.', image: '/images/service-commissioning.jpg' },
+  { number: '01', title: 'Mechanical services', copy: 'Innovative and reliable engineering for integrated mechanical systems. We deliver high-quality solutions designed around efficiency, comfort, and dependable performance.', image: '/images/mechanical-hvac-pipeline-installation.webp' },
+  { number: '02', title: 'Electrical services', copy: 'Power distribution, lighting, low current, and controls coordinated into safe, reliable systems that support every building.', image: '/images/electrical-cable-and-pipeline-systems.webp' },
+  { number: '03', title: 'Design & coordination', copy: 'Clear, buildable engineering from early design through BIM coordination, helping every discipline work together smoothly.', image: '/images/mep-engineering-plans-review.webp' },
+  { number: '04', title: 'Testing & commissioning', copy: 'Careful testing, commissioning, and handover so each system performs as intended from the first day of operation.', image: '/images/engineer-commissioning-pump-room.webp' },
 ];
 
 export const imageSlots = {
-  intro: '/images/intro.jpg',
-  feature: '/images/approach.jpg',
-  projectsHero: '/images/projects-hero.jpg',
-  aboutHero: '/images/about-hero.jpg',
-  servicesHero: '/images/services-hero.jpg',
-  approachHero: '/images/approach-hero.jpg',
+  intro: '/images/construction-site-engineer.webp', feature: '/images/technician-installing-mechanical-system.webp',
+  projectsHero: '/images/industrial-rooftop-equipment.webp', aboutHero: '/images/construction-site-engineer.webp',
+  servicesHero: '/images/mechanical-hvac-pipeline-installation.webp', approachHero: '/images/overhead-mep-services.webp',
   clients: ['/images/client-01.png', '/images/client-02.png', '/images/client-03.png', '/images/client-04.png', '/images/client-05.png'],
 };
 
-// Replace with Ultra's WhatsApp number in international format, digits only.
 export const whatsappNumber = '201000000000';
-
-// Replace these profile URLs with Ultra's official social accounts.
-export const socialLinks = {
-  facebook: 'https://www.facebook.com/your-page',
-  instagram: 'https://www.instagram.com/your-profile',
-};
+export const socialLinks = { facebook: 'https://www.facebook.com/your-page', instagram: 'https://www.instagram.com/your-profile' };
