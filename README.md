@@ -90,7 +90,7 @@ Create the first Cloudflare admin account from an interactive terminal:
 npm run cf:admin:create
 ```
 
-The command prompts for an email and a password (input hidden), then prints a Wrangler command to save the password hash into D1. Use a unique password at least 12 bytes long. Running it again for the same email updates that account's password.
+The command prompts for an email and a password (input hidden), then prints a Wrangler command to save the password hash into D1. Use a unique password at least 8 bytes long. Running it again for the same email updates that account's password.
 
 With `npm run dev` and `npm run dev:server` running, open `http://localhost:5173/admin.html`. The dashboard uses an HTTP-only, SameSite strict session cookie and server-side SQLite session storage. Sessions expire after eight hours of inactivity. Admin APIs include login/session/logout, lead summary, paginated/searchable/filterable lead listing, lead details, and status updates. Existing leads receive the `New` status when the backend starts and migrates the database.
 

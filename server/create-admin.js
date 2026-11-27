@@ -43,9 +43,9 @@ try {
   readline.close();
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address.');
 
-  const password = await readHiddenPassword('Admin password (12–72 bytes, input hidden): ');
-  if (Buffer.byteLength(password, 'utf8') < 12 || Buffer.byteLength(password, 'utf8') > 72) {
-    throw new Error('Password must be between 12 and 72 bytes.');
+  const password = await readHiddenPassword('Admin password (8–72 bytes, input hidden): ');
+  if (Buffer.byteLength(password, 'utf8') < 8 || Buffer.byteLength(password, 'utf8') > 72) {
+    throw new Error('Password must be between 8 and 72 bytes.');
   }
   const confirmation = await readHiddenPassword('Confirm admin password: ');
   if (password !== confirmation) throw new Error('Passwords did not match. No account changes were made.');

@@ -20,8 +20,8 @@ const readline = createInterface({ input: stdin, output: stdout });
 try {
   const email = (await readline.question('Admin email: ')).trim().toLowerCase();
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address.');
-  const password = await readHiddenPassword('Admin password (12–72 bytes, input hidden): ');
-  if (Buffer.byteLength(password, 'utf8') < 12 || Buffer.byteLength(password, 'utf8') > 72) throw new Error('Password must be between 12 and 72 bytes.');
+  const password = await readHiddenPassword('Admin password (8–72 bytes, input hidden): ');
+  if (Buffer.byteLength(password, 'utf8') < 8 || Buffer.byteLength(password, 'utf8') > 72) throw new Error('Password must be between 8 and 72 bytes.');
   if (password !== await readHiddenPassword('Confirm admin password: ')) throw new Error('Passwords did not match.');
   const salt = randomBytes(16).toString('base64url');
   const hash = pbkdf2Sync(password, Buffer.from(salt, 'base64url'), 210000, 32, 'sha256').toString('hex');
