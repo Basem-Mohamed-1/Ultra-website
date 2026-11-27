@@ -2,7 +2,7 @@ import '../styles.css';
 import { blogs, blogTranslations } from '../data/blogs.js';
 import { servicePages } from '../data/service-pages.js';
 import { imageDimensionAttributes } from '../data/image-dimensions.js';
-import { arrow, headerMarkup, footerMarkup, stickyWhatsAppMarkup, initSiteShell } from '../components/site-shell.js';
+import { arrow, headerMarkup, footerMarkup, stickyWhatsAppMarkup, contactFormMarkup, initSiteShell } from '../components/site-shell.js';
 
 const appRoot = document.querySelector('#app');
 const slug = window.location.pathname.split('/').filter(Boolean).at(-1);
@@ -17,6 +17,7 @@ if (!article) {
     <main class="blogs-page">
       <section class="blogs-intro section-pad"><p class="eyebrow"><span class="eyebrow-line"></span>ULTRA · MEP ENGINEERING</p><h1>Blogs</h1><p>Practical MEP guidance for project teams, from planning and coordination through installation and handover.</p></section>
       <section class="blog-list section-pad" aria-label="Articles"><div class="blog-grid">${blogs.map(blogCard).join('')}</div></section>
+      <section class="portfolio-contact section-pad"><div class="portfolio-contact-layout"><div class="portfolio-contact-copy"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Start Your Project<br><em>with Ultra.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div></section>
     </main>
     ${stickyWhatsAppMarkup()}${footerMarkup('blogs')}`;
 } else {
@@ -32,6 +33,7 @@ if (!article) {
         <article class="blog-article-content"><figure class="blog-article-image"><img src="${article.image}" alt="${article.imageAlt}" ${imageDimensionAttributes(article.image)} fetchpriority="high"></figure><div class="blog-article-body">${article.sections.map(section => `<section><h2>${section.heading}</h2><p>${section.text}</p></section>`).join('')}<section class="blog-related-services"><h2>Related services</h2><nav aria-label="Related services">${relatedServices.map(service => `<a href="/services/${service.slug}">${service.title}${arrow}</a>`).join('')}</nav></section><p class="blog-technical-note"><strong>Technical note</strong> — The guidance in this article is general. Project requirements, approved drawings, specifications, applicable codes, and manufacturer instructions govern the final design and installation.</p><a class="blog-contact-link" href="/contact">Talk to our team ${arrow}</a></div></article>
         <aside class="other-blogs"><p class="eyebrow"><span class="eyebrow-line"></span>ULTRA · BLOGS</p><h2>Other articles</h2><p class="other-blogs-intro">Explore more MEP guidance.</p><nav aria-label="Other articles">${otherBlogs.map(item => `<a href="/blogs/${item.slug}"><span><time>${item.date}</time><strong>${item.title}</strong></span>${arrow}</a>`).join('')}</nav></aside>
       </div>
+      <section class="portfolio-contact section-pad"><div class="portfolio-contact-layout"><div class="portfolio-contact-copy"><p class="eyebrow"><span class="eyebrow-line"></span>HAVE A PROJECT IN MIND?</p><h2>Start Your Project<br><em>with Ultra.</em></h2><p class="contact-intro">Tell us a little about what you need and our team will get back to you.</p></div>${contactFormMarkup()}</div></section>
     </main>
     ${stickyWhatsAppMarkup()}${footerMarkup('blogs')}`;
 }
