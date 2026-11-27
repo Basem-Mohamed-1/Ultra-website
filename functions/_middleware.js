@@ -1,4 +1,5 @@
 const SESSION_TTL_SECONDS = 8 * 60 * 60;
+const CSRF_TTL_SECONDS = 10 * 60;
 
 async function sha256(value) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
@@ -23,6 +24,16 @@ function cookie(value, maxAge = SESSION_TTL_SECONDS) {
   return `ultra_admin_session=${encodeURIComponent(value)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 }
 
+async function sign(value, secret) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value));
+  return bytesToBase64Url(new Uint8Array(signature));
+}
+
+function csrfCookie(value, maxAge = CSRF_TTL_SECONDS) {
+  return `ultra_admin_csrf=${encodeURIComponent(value)}; Path=/; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+}
+
 export async function onRequest(context) {
   const { request, env, next, data } = context;
   const url = new URL(request.url);
@@ -37,12 +48,9 @@ export async function onRequest(context) {
   }
 
   if (!session && url.pathname === '/api/admin/session') {
-    const sid = rawSession || randomToken();
     const csrfToken = randomToken();
-    const now = Math.floor(Date.now() / 1000);
     data.csrfToken = csrfToken;
-    data.setCookie = cookie(sid);
-    data.anonymousSession = { sid, csrfToken, csrfHash: await sha256(csrfToken), now };
+    data.setCsrfCookie = csrfCookie(`${csrfToken}.${await sign(csrfToken, env.ADMIN_CSRF_SECRET)}`);
     data.session = null;
     return next();
   }
@@ -63,19 +71,17 @@ export async function onRequest(context) {
     data.csrfValid = request.method === 'GET' || (await sha256(request.headers.get('X-CSRF-Token') || '')) === session.csrf_hash;
   } else if (url.pathname === '/api/admin/login') {
     const provided = request.headers.get('X-CSRF-Token') || '';
-    data.csrfValid = (await sha256(provided)) === session?.csrf_hash;
+    const csrfCookieValue = cookies.ultra_admin_csrf || '';
+    const [cookieToken, cookieSignature] = csrfCookieValue.split('.');
+    const expectedSignature = cookieToken ? await sign(cookieToken, env.ADMIN_CSRF_SECRET) : '';
+    data.csrfValid = Boolean(cookieToken && cookieToken === provided && cookieSignature === expectedSignature && (!session || (await sha256(provided)) === session.csrf_hash));
   } else {
     data.csrfValid = false;
   }
 
   const response = await next();
   const headers = new Headers(response.headers);
-  if (data.setCookie) headers.append('Set-Cookie', data.setCookie);
-  if (data.anonymousSession && response.ok) {
-    const { sid, csrfHash, now } = data.anonymousSession;
-    await env.DB.prepare('INSERT INTO admin_sessions (sid_hash, admin_id, csrf_hash, expires_at, created_at) VALUES (?, NULL, ?, ?, ?)')
-      .bind(await sha256(sid), csrfHash, now + SESSION_TTL_SECONDS, now).run();
-  }
+  if (data.setCsrfCookie) headers.append('Set-Cookie', data.setCsrfCookie);
   if (response.status === 401 && session?.admin_id) {
     headers.append('Set-Cookie', cookie('', 0));
     await env.DB.prepare('DELETE FROM admin_sessions WHERE sid_hash = ?').bind(await sha256(rawSession)).run();
@@ -94,6 +100,10 @@ export function makeToken() {
 
 export function sessionCookie(value, maxAge = SESSION_TTL_SECONDS) {
   return cookie(value, maxAge);
+}
+
+export function clearCsrfCookie() {
+  return csrfCookie('', 0);
 }
 
 export function json(data, status = 200, headers = {}) {

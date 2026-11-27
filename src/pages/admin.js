@@ -26,7 +26,7 @@ async function api(path, options = {}) {
   const result = await response.json().catch(() => ({}));
   if (!response.ok) {
     if (response.status === 401 && path !== '/api/admin/login') renderLogin('Your session ended. Please sign in again.');
-    throw new Error(result.message || 'The request could not be completed.');
+    throw new Error(result.message || `Request failed (${response.status}). Please try again.`);
   }
   return result;
 }

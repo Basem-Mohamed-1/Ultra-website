@@ -1,4 +1,4 @@
-import { json, makeToken, sessionCookie, sessionHash } from '../../_middleware.js';
+import { clearCsrfCookie, json, makeToken, sessionCookie, sessionHash } from '../../_middleware.js';
 
 function decodeBase64Url(value) {
   const normalized = value.replaceAll('-', '+').replaceAll('_', '/');
@@ -12,7 +12,7 @@ async function hashPassword(password, salt) {
 }
 
 export async function onRequestPost({ request, env, data }) {
-  if (!data.csrfValid) return json({ message: 'Your session expired. Refresh and try again.' }, 403);
+  if (!data.csrfValid) return json({ message: 'Security check expired. Refresh the page and try again.' }, 403);
   let body;
   try { body = await request.json(); } catch { return json({ message: 'Request body must be valid JSON.' }, 400); }
   const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
@@ -46,5 +46,5 @@ export async function onRequestPost({ request, env, data }) {
   await env.DB.prepare('DELETE FROM admin_sessions WHERE sid_hash = ?').bind(await sessionHash(data.sessionId || '')).run();
   await env.DB.prepare('INSERT INTO admin_sessions (sid_hash, admin_id, csrf_hash, expires_at, created_at) VALUES (?, ?, ?, ?, ?)')
     .bind(await sessionHash(sid), admin.id, await sessionHash(csrf), nowSeconds + 8 * 60 * 60, nowSeconds).run();
-  return json({ authenticated: true, email: admin.email, csrfToken: csrf }, 200, { 'Set-Cookie': sessionCookie(sid) });
+  return json({ authenticated: true, email: admin.email, csrfToken: csrf }, 200, { 'Set-Cookie': `${sessionCookie(sid)}, ${clearCsrfCookie()}` });
 }
