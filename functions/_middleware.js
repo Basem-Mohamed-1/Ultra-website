@@ -24,14 +24,8 @@ function cookie(value, maxAge = SESSION_TTL_SECONDS) {
   return `ultra_admin_session=${encodeURIComponent(value)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 }
 
-async function sign(value, secret) {
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value));
-  return bytesToBase64Url(new Uint8Array(signature));
-}
-
 function csrfCookie(value, maxAge = CSRF_TTL_SECONDS) {
-  return `ultra_admin_csrf=${encodeURIComponent(value)}; Path=/; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+  return `ultra_admin_csrf=${encodeURIComponent(value)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 }
 
 export async function onRequest(context) {
@@ -50,7 +44,7 @@ export async function onRequest(context) {
   if (!session && url.pathname === '/api/admin/session') {
     const csrfToken = randomToken();
     data.csrfToken = csrfToken;
-    data.setCsrfCookie = csrfCookie(`${csrfToken}.${await sign(csrfToken, env.ADMIN_CSRF_SECRET)}`);
+    data.setCsrfCookie = csrfCookie(csrfToken);
     data.session = null;
     return next();
   }
@@ -72,9 +66,7 @@ export async function onRequest(context) {
   } else if (url.pathname === '/api/admin/login') {
     const provided = request.headers.get('X-CSRF-Token') || '';
     const csrfCookieValue = cookies.ultra_admin_csrf || '';
-    const [cookieToken, cookieSignature] = csrfCookieValue.split('.');
-    const expectedSignature = cookieToken ? await sign(cookieToken, env.ADMIN_CSRF_SECRET) : '';
-    data.csrfValid = Boolean(cookieToken && cookieToken === provided && cookieSignature === expectedSignature && (!session || (await sha256(provided)) === session.csrf_hash));
+    data.csrfValid = Boolean(csrfCookieValue && csrfCookieValue === provided && (!session || (await sha256(provided)) === session.csrf_hash));
   } else {
     data.csrfValid = false;
   }
