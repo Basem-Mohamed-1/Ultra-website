@@ -8,14 +8,14 @@
     "dev:server": "node --env-file-if-exists=.env --watch server/index.js",
     "start:server": "node --env-file-if-exists=.env server/index.js",
     "admin:create": "node --env-file-if-exists=.env server/create-admin.js",
-    "build": "vite build",
+    "build": "vite build && wrangler pages functions build --outdir .cloudflare-worker",
     "preview": "vite preview",
     "cf:dev": "wrangler pages dev dist",
     "cf:d1:create": "wrangler d1 create ultra-leads",
     "cf:d1:migrate:local": "wrangler d1 migrations apply ultra-leads --local",
     "cf:d1:migrate:remote": "wrangler d1 migrations apply ultra-leads --remote",
     "cf:admin:create": "node scripts/create-cloudflare-admin.js",
-    "cf:build": "npm run build && wrangler pages functions build --outdir .cloudflare-worker"
+    "cf:build": "npm run build"
   },
   "engines": {
     "node": ">=22.13.0"
