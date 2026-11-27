@@ -7,3 +7,27 @@
 /contact.html /contact 301
 /admin.html /admin 301
 /services-bms.html /services/shop-drawings 301
+
+# Serve the built multi-page files at the clean URLs used throughout the site.
+/about /about.html 200
+/services /services.html 200
+/services/hvac /services-hvac.html 200
+/services/electrical-power /services-electrical-power.html 200
+/services/plumbing-drainage /services-plumbing-drainage.html 200
+/services/fire-fighting /services-fire-fighting.html 200
+/services/fire-alarm /services-fire-alarm.html 200
+/services/low-current-elv /services-low-current-elv.html 200
+/services/shop-drawings /services-shop-drawings.html 200
+/services/maintenance /services-maintenance.html 200
+/projects /projects.html 200
+/blogs /blogs.html 200
+/blogs/bathroom-kitchen-plumbing-installation /blogs-bathroom-kitchen-plumbing-installation.html 200
+/blogs/ceiling-electrical-installation /blogs-ceiling-electrical-installation.html 200
+/blogs/central-heating-systems /blogs-central-heating-systems.html 200
+/blogs/electrical-load-distribution-boards /blogs-electrical-load-distribution-boards.html 200
+/blogs/fire-alarm-system-design-installation /blogs-fire-alarm-system-design-installation.html 200
+/blogs/vrf-air-conditioning-systems /blogs-vrf-air-conditioning-systems.html 200
+/blogs/air-conditioning-piping-before-plastering /blogs-air-conditioning-piping-before-plastering.html 200
+/blogs/electrical-infrastructure-works /blogs-electrical-infrastructure-works.html 200
+/approach /approach.html 200
+/admin /admin.html 200
