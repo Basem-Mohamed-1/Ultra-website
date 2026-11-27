@@ -44,9 +44,12 @@ export async function onRequest(context) {
   if (!session && url.pathname === '/api/admin/session') {
     const csrfToken = randomToken();
     data.csrfToken = csrfToken;
-    data.setCsrfCookie = csrfCookie(csrfToken);
     data.session = null;
-    return next();
+    const response = await next();
+    const headers = new Headers(response.headers);
+    headers.append('Set-Cookie', csrfCookie(csrfToken));
+    headers.set('Cache-Control', 'no-store');
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   }
 
   if (!session && url.pathname !== '/api/admin/login') {
@@ -73,7 +76,6 @@ export async function onRequest(context) {
 
   const response = await next();
   const headers = new Headers(response.headers);
-  if (data.setCsrfCookie) headers.append('Set-Cookie', data.setCsrfCookie);
   if (response.status === 401 && session?.admin_id) {
     headers.append('Set-Cookie', cookie('', 0));
     await env.DB.prepare('DELETE FROM admin_sessions WHERE sid_hash = ?').bind(await sha256(rawSession)).run();
