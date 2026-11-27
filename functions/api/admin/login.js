@@ -46,5 +46,9 @@ export async function onRequestPost({ request, env, data }) {
   await env.DB.prepare('DELETE FROM admin_sessions WHERE sid_hash = ?').bind(await sessionHash(data.sessionId || '')).run();
   await env.DB.prepare('INSERT INTO admin_sessions (sid_hash, admin_id, csrf_hash, expires_at, created_at) VALUES (?, ?, ?, ?, ?)')
     .bind(await sessionHash(sid), admin.id, await sessionHash(csrf), nowSeconds + 8 * 60 * 60, nowSeconds).run();
-  return json({ authenticated: true, email: admin.email, csrfToken: csrf }, 200, { 'Set-Cookie': `${sessionCookie(sid)}, ${clearCsrfCookie()}` });
+  const response = json({ authenticated: true, email: admin.email, csrfToken: csrf });
+  const headers = new Headers(response.headers);
+  headers.append('Set-Cookie', sessionCookie(sid));
+  headers.append('Set-Cookie', clearCsrfCookie());
+  return new Response(response.body, { status: response.status, headers });
 }
