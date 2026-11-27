@@ -18,5 +18,6 @@ export const imageSlots = {
   clients: ['/images/client-01.png', '/images/client-02.png', '/images/client-03.png', '/images/client-04.png', '/images/client-05.png'],
 };
 
-export const whatsappNumber = '201000000000';
+// wa.me requires an international number with no +, spaces, or leading zero.
+export const whatsappNumber = '201028909822';
 export const socialLinks = { facebook: 'https://www.facebook.com/your-page', instagram: 'https://www.instagram.com/your-profile' };

@@ -80,7 +80,7 @@ The site remains a Vite multi-page application. A small Vite middleware maps cle
 
 Old `.html` addresses redirect to their clean equivalent locally. Internal links use clean paths. The contact section remains part of the home page; `/contact` does not create a duplicate page.
 
-No production-host configuration is included yet. Once a host is selected, configure it to internally rewrite the clean paths above to the listed HTML files while leaving the browser URL unchanged. Also add permanent redirects from `/index.html`, `/about.html`, `/services.html`, `/projects.html`, `/blogs.html`, `/approach.html`, `/contact.html`, and `/admin.html` to their clean paths. Make sure `/api/*`, `/assets/*`, `/images/*`, and other existing files are served before any page fallback, so backend requests and assets are not rewritten to HTML. The exact syntax and config filename depend on the host.
+For production, the Express server serves `dist/` and handles the clean URLs and legacy redirects above. `render.yaml` provides a ready-to-deploy Render Web Service configuration, including persistent SQLite storage. The static files and `/api` share one HTTPS origin, so no CORS configuration is required.
 
 ## Admin dashboard
 
@@ -122,7 +122,7 @@ Use the SMTP credentials supplied by your email provider. Keep `.env` private; i
 
 To check the API locally, start both servers and submit the form from any page. A successful response appears below the form. To verify the database directly, use a SQLite viewer or run `sqlite3 server/data/leads.sqlite 'SELECT id, full_name, phone_number, email, service_required, created_at FROM leads;'`.
 
-For production, deploy the Node API on a Node.js 22.13+ host, configure the environment variables in the host's secret settings, and attach persistent storage for the SQLite file. Route `/api/*` from the public website domain to this API so the same-origin form request continues to work. The static site and API can be hosted separately behind a reverse proxy, or served by a platform that supports both. Do not place the database on an ephemeral filesystem; back it up and restrict access to it. SMTP credentials belong only in the backend environment.
+For production, deploy the project as one Node.js 22.13+ service. Attach persistent storage for the SQLite file and set `DATABASE_PATH` to a file on that storage. Do not place the database on an ephemeral filesystem; back it up and restrict access to it. SMTP credentials belong only in the backend environment.
 
 ## Content and assets
 
@@ -149,5 +149,5 @@ client-01.png ... client-05.png         # Client/partner logos
 
 Edit `src/data/site.js` to add/remove image slots or change their filenames, and `src/data/projects.js` to update project cards. The labels remain visible until an image with a matching name is supplied. Brand colors are defined in `src/styles.css`: the guideline PDF's embedded blue swatch is used as the primary accent, with light gray sections to balance the darker hero and service areas.
 
-Set `whatsappNumber` in `src/data/site.js` to the company's WhatsApp number in international format (digits only) before publishing.
+The WhatsApp number is configured in `src/data/site.js` in international format (digits only).
 Replace the Facebook and Instagram placeholder URLs in `socialLinks` in `src/data/site.js` with Ultra's official profile links.
