@@ -15,7 +15,7 @@
     "cf:d1:migrate:local": "wrangler d1 migrations apply ultra-leads --local",
     "cf:d1:migrate:remote": "wrangler d1 migrations apply ultra-leads --remote",
     "cf:admin:create": "node scripts/create-cloudflare-admin.js",
-    "cf:build": "npm run build && wrangler pages functions build"
+    "cf:build": "npm run build && wrangler pages functions build --outdir .cloudflare-worker"
   },
   "engines": {
     "node": ">=22.13.0"
