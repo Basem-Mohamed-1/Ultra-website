@@ -1,0 +1,11 @@
+name = "ultra-mep-website"
+compatibility_date = "2026-11-27"
+
+[assets]
+directory = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ultra-leads"
+database_id = "254cfda4-100f-4dc3-aed6-4d3b4498cbd8"
+migrations_dir = "migrations"

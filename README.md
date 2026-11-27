@@ -1,6 +1,6 @@
 # Ultra website
 
-A responsive, multi-page MEP company website built with vanilla JavaScript and Vite, with a small Express contact API and SQLite lead storage. The project keeps page content, shared behavior, backend logic, and visual styles in separate files so the site can grow without becoming difficult to maintain.
+A responsive, multi-page MEP company website built with vanilla JavaScript and Vite. It can run locally on Express and SQLite, and deploy for free on Cloudflare Pages with Pages Functions and D1 for contact leads and admin access.
 
 ## Structure
 
@@ -80,23 +80,21 @@ The site remains a Vite multi-page application. A small Vite middleware maps cle
 
 Old `.html` addresses redirect to their clean equivalent locally. Internal links use clean paths. The contact section remains part of the home page; `/contact` does not create a duplicate page.
 
-For production, the Express server serves `dist/` and handles the clean URLs and legacy redirects above. `render.yaml` provides a ready-to-deploy Render Web Service configuration, including persistent SQLite storage. The static files and `/api` share one HTTPS origin, so no CORS configuration is required.
+For Cloudflare Workers, `wrangler.toml` serves the built `dist/` directory as static assets and binds the D1 database. `public/_redirects` maps clean page paths to HTML entry files and redirects legacy `.html` links. The `functions/` directory contains the Pages Functions API handlers.
 
 ## Admin dashboard
 
-Set `ADMIN_SESSION_SECRET` in `.env` to a cryptographically random value of at least 32 bytes. The local `.env` created for this project has a generated value; keep it private. For another environment, generate a secret with `node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"`. If running behind one trusted reverse proxy in production, keep `TRUST_PROXY_HOPS=1`; adjust it only to match the actual proxy chain.
-
-Create the first admin account from an interactive terminal:
+Create the first Cloudflare admin account from an interactive terminal:
 
 ```sh
-npm run admin:create
+npm run cf:admin:create
 ```
 
-The command prompts for an email and a password (input hidden), confirms the password, hashes it with bcrypt, and stores only the hash in the `admin_users` table. Use a unique password at least 12 bytes long. Running the command again for the same email updates that account's password.
+The command prompts for an email and a password (input hidden), then prints a Wrangler command to save the password hash into D1. Use a unique password at least 12 bytes long. Running it again for the same email updates that account's password.
 
 With `npm run dev` and `npm run dev:server` running, open `http://localhost:5173/admin.html`. The dashboard uses an HTTP-only, SameSite strict session cookie and server-side SQLite session storage. Sessions expire after eight hours of inactivity. Admin APIs include login/session/logout, lead summary, paginated/searchable/filterable lead listing, lead details, and status updates. Existing leads receive the `New` status when the backend starts and migrates the database.
 
-In production, serve the admin page over HTTPS, configure the same `/api` origin or a trusted reverse proxy, provide a stable random `ADMIN_SESSION_SECRET`, and use persistent protected storage and backups for the SQLite database. Keep login rate limits enabled; add monitoring and account recovery procedures before opening the dashboard to production users. The admin page itself is not secret; access control is enforced by the backend APIs.
+The Cloudflare version uses an HTTP-only, secure, SameSite strict session cookie, stores session hashes in D1, and expires sessions after eight hours. Admin APIs include login/session/logout, lead summary, paginated/searchable/filterable lead listing, lead details, status updates, and deletion.
 
 Run `npm run build` to create the production frontend bundle in `dist/`.
 
@@ -104,7 +102,7 @@ Run `npm run build` to create the production frontend bundle in `dist/`.
 
 The contact form appears in the “Let's build” section of every page and collects a full name, phone number, email address, and required service. Service choices are Project Execution, Project design, and Design and execution. The API validates these fields and saves them in SQLite before attempting to email a notification. Earlier leads keep their original service labels and remain available in the admin filters and service summary.
 
-Configure these values in `.env`:
+Configure SMTP values in `.env` for local Express, or use Cloudflare Pages environment variables for production email notifications:
 
 ```text
 PORT=3000
@@ -123,6 +121,17 @@ Use the SMTP credentials supplied by your email provider. Keep `.env` private; i
 To check the API locally, start both servers and submit the form from any page. A successful response appears below the form. To verify the database directly, use a SQLite viewer or run `sqlite3 server/data/leads.sqlite 'SELECT id, full_name, phone_number, email, service_required, created_at FROM leads;'`.
 
 For production, deploy the project as one Node.js 22.13+ service. Attach persistent storage for the SQLite file and set `DATABASE_PATH` to a file on that storage. Do not place the database on an ephemeral filesystem; back it up and restrict access to it. SMTP credentials belong only in the backend environment.
+
+## Free Cloudflare deployment
+
+1. Create a free Cloudflare account and install dependencies with `npm install`.
+2. Create the D1 database: `npm run cf:d1:create`. Copy the returned database ID into `wrangler.toml` in place of `REPLACE_WITH_DATABASE_ID`.
+3. Apply the schema remotely: `npm run cf:d1:migrate:remote`.
+4. Deploy from the project directory with `npx wrangler deploy`. The Worker serves `dist/` assets and handles `/api/*` through Pages Functions.
+5. From the Cloudflare project directory, run `npm run cf:admin:create`, then run the Wrangler D1 command it prints.
+6. Open `/admin` on the deployed `*.pages.dev` URL and sign in.
+
+The contact form always saves leads in D1. Optional email notifications use Resend: set `RESEND_API_KEY`, `CONTACT_RECIPIENT`, and `SMTP_FROM` in Pages environment variables. Until an email sender is configured, view submissions in `/admin`.
 
 ## Content and assets
 
