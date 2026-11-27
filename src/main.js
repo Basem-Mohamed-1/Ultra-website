@@ -102,9 +102,8 @@ projectCarousel.addEventListener('pointerdown', event => {
   projectDrag = { pointerId: event.pointerId, startX: event.clientX, startScrollLeft: projectCarousel.scrollLeft, distance: 0 };
   projectTrack.style.animationPlayState = 'paused';
   projectCarousel.classList.add('is-dragging');
-  projectCarousel.setPointerCapture(event.pointerId);
 });
-projectCarousel.addEventListener('pointermove', event => {
+window.addEventListener('pointermove', event => {
   if (!projectDrag || projectDrag.pointerId !== event.pointerId) return;
   const delta = event.clientX - projectDrag.startX;
   projectDrag.distance = Math.max(projectDrag.distance, Math.abs(delta));
@@ -126,11 +125,12 @@ projectCarousel.addEventListener('click', event => {
   event.preventDefault();
   event.stopPropagation();
 }, true);
-projectCarousel.addEventListener('pointerup', event => {
+window.addEventListener('pointerup', event => {
   if (projectDrag && projectDrag.pointerId === event.pointerId) finishProjectDrag();
 });
-projectCarousel.addEventListener('pointercancel', finishProjectDrag);
-projectCarousel.addEventListener('lostpointercapture', finishProjectDrag);
+window.addEventListener('pointercancel', event => {
+  if (projectDrag && projectDrag.pointerId === event.pointerId) finishProjectDrag();
+});
 projectCarousel.addEventListener('wheel', event => {
   const horizontalDelta = event.deltaX || (event.shiftKey ? event.deltaY : 0);
   if (!horizontalDelta) return;
