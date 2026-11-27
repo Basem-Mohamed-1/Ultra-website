@@ -3,7 +3,7 @@ import { slides, services, imageSlots } from './data/site.js';
 import { projects } from './data/projects.js';
 import { imageDimensionAttributes, imageDimensions } from './data/image-dimensions.js';
 import { arrow, headerMarkup, footerMarkup, whatsappButtonMarkup, stickyWhatsAppMarkup, contactFormMarkup, initSiteShell } from './components/site-shell.js';
-const projectCards = () => projects.map((p, i) => `<article class="project-card" style="--project-delay:${i * 90}ms"><div class="project-image image-slot"><img class="project-lazy-image" src="${p.image}" alt="${p.imageAlt}" ${imageDimensionAttributes(p.image)} loading="lazy" onload="this.classList.add('is-loaded')" onerror="this.style.display='none'"><span class="project-index">${String(i + 1).padStart(2, '0')}</span><span class="image-slot-label">PROJECT PHOTO ${String(i + 1).padStart(2, '0')}</span><span class="project-open" aria-hidden="true">${arrow}</span></div><h3>${p.name}</h3><p>${p.type}</p></article>`).join('');
+const projectCards = () => projects.map((p, i) => `<a class="project-card" href="/projects" aria-label="View all projects — ${p.name}" style="--project-delay:${i * 90}ms"><div class="project-image image-slot"><img class="project-lazy-image" src="${p.image}" alt="${p.imageAlt}" ${imageDimensionAttributes(p.image)} loading="lazy" onload="this.classList.add('is-loaded')" onerror="this.style.display='none'"><span class="project-index">${String(i + 1).padStart(2, '0')}</span><span class="image-slot-label">PROJECT PHOTO ${String(i + 1).padStart(2, '0')}</span><span class="project-open" aria-hidden="true">${arrow}</span></div><h3>${p.name}</h3><p>${p.type}</p></a>`).join('');
 
 document.querySelector('#app').innerHTML = `
   ${headerMarkup('home')}
@@ -31,7 +31,7 @@ document.querySelector('#app').innerHTML = `
     </section>
 
     <section class="services section-pad" id="services"><div class="section-kicker"><span>02 / WHAT WE DO</span><span>ONE CONNECTED APPROACH</span></div><div class="services-head"><h2>Integrated Services.<br><em>Unified Project Delivery.</em></h2><p>From the first drawing to the final switch-on, every detail is considered, coordinated, and cared for.</p></div>
-      <div class="service-grid">${services.map(s => `<article class="service-card image-slot"><img src="${s.image}" alt="" ${imageDimensionAttributes(s.image)} loading="lazy" onerror="this.style.display='none'"><div class="service-card-wash"></div><div class="service-card-copy"><span class="service-number">${s.number} / MEP SERVICES</span><h3>${s.title}</h3><p>${s.copy}</p><span class="service-card-arrow" aria-hidden="true">${arrow}</span></div><span class="image-slot-label">SERVICE IMAGE · ${s.image.split('/').pop()}</span></article>`).join('')}</div>
+      <div class="service-grid">${services.map(s => `<a class="service-card image-slot" href="/services" aria-label="Explore services — ${s.title}"><img src="${s.image}" alt="" ${imageDimensionAttributes(s.image)} loading="lazy" onerror="this.style.display='none'"><div class="service-card-wash"></div><div class="service-card-copy"><span class="service-number">${s.number} / MEP SERVICES</span><h3>${s.title}</h3><p>${s.copy}</p><span class="service-card-arrow" aria-hidden="true">${arrow}</span></div><span class="image-slot-label">SERVICE IMAGE · ${s.image.split('/').pop()}</span></a>`).join('')}</div>
     </section>
 
     <section class="feature" id="approach"><div class="feature-image image-slot"><img src="${imageSlots.feature}" alt="" ${imageDimensionAttributes(imageSlots.feature)} loading="lazy" onerror="this.style.display='none'"/><span class="image-slot-label">APPROACH IMAGE · technician-installing-mechanical-system.webp</span></div><div class="feature-copy"><div class="section-kicker"><span>03 / HOW WE WORK</span><span>BUILT ON CLARITY</span></div><p class="eyebrow"><span class="eyebrow-line"></span>OUR APPROACH</p><h2>Quality That Speaks<br><em>Through Every Detail.</em></h2><p class="feature-body">We uphold the highest standards of quality across every stage of our work, ensuring precision, consistency, and excellence in every detail.</p><a class="text-link" href="#contact">Work with our team ${arrow}</a></div></section>
@@ -96,6 +96,7 @@ const setProjectLoopDistance = () => {
 setProjectLoopDistance();
 new ResizeObserver(setProjectLoopDistance).observe(projectTrackGroup);
 let projectDrag = null;
+let suppressProjectClick = false;
 projectCarousel.addEventListener('pointerdown', event => {
   if (event.pointerType === 'mouse' && event.button !== 0) return;
   projectDrag = { pointerId: event.pointerId, startX: event.clientX, startScrollLeft: projectCarousel.scrollLeft, distance: 0 };
@@ -111,11 +112,20 @@ projectCarousel.addEventListener('pointermove', event => {
 });
 function finishProjectDrag() {
   if (!projectDrag) return;
+  if (projectDrag.distance > 4) {
+    suppressProjectClick = true;
+    window.setTimeout(() => { suppressProjectClick = false; }, 0);
+  }
   projectTrack.style.animationPlayState = '';
   projectCarousel.classList.remove('is-hovering');
   projectCarousel.classList.remove('is-dragging');
   projectDrag = null;
 }
+projectCarousel.addEventListener('click', event => {
+  if (!suppressProjectClick) return;
+  event.preventDefault();
+  event.stopPropagation();
+}, true);
 projectCarousel.addEventListener('pointerup', event => {
   if (projectDrag && projectDrag.pointerId === event.pointerId) finishProjectDrag();
 });
