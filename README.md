@@ -126,7 +126,7 @@ For production, deploy the project as one Node.js 22.13+ service. Attach persist
 
 1. Create a free Cloudflare account and install dependencies with `npm install`.
 2. Create the D1 database: `npm run cf:d1:create`. Copy the returned database ID into `wrangler.toml` in place of `REPLACE_WITH_DATABASE_ID`.
-3. Apply the schema remotely: `npm run cf:d1:migrate:remote`.
+3. Apply the schema and session fix remotely: `npm run cf:d1:migrate:remote`.
 4. Deploy from the project directory with `npx wrangler deploy`. The Worker serves `dist/` assets and handles `/api/*` through Pages Functions.
 5. From the Cloudflare project directory, run `npm run cf:admin:create`, then run the Wrangler D1 command it prints.
 6. Open `/admin` on the deployed `*.pages.dev` URL and sign in.

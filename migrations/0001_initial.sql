@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 
 CREATE TABLE IF NOT EXISTS admin_sessions (
   sid_hash TEXT PRIMARY KEY,
-  admin_id INTEGER NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+  admin_id INTEGER REFERENCES admin_users(id) ON DELETE CASCADE,
   csrf_hash TEXT NOT NULL,
   expires_at INTEGER NOT NULL,
   created_at INTEGER NOT NULL

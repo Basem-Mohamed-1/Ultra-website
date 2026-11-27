@@ -37,13 +37,12 @@ export async function onRequest(context) {
   }
 
   if (!session && url.pathname === '/api/admin/session') {
-    const sid = randomToken();
+    const sid = rawSession || randomToken();
     const csrfToken = randomToken();
     const now = Math.floor(Date.now() / 1000);
-    await env.DB.prepare('INSERT INTO admin_sessions (sid_hash, admin_id, csrf_hash, expires_at, created_at) VALUES (?, NULL, ?, ?, ?)')
-      .bind(await sha256(sid), await sha256(csrfToken), now + SESSION_TTL_SECONDS, now).run();
     data.csrfToken = csrfToken;
     data.setCookie = cookie(sid);
+    data.anonymousSession = { sid, csrfToken, csrfHash: await sha256(csrfToken), now };
     data.session = null;
     return next();
   }
@@ -72,6 +71,11 @@ export async function onRequest(context) {
   const response = await next();
   const headers = new Headers(response.headers);
   if (data.setCookie) headers.append('Set-Cookie', data.setCookie);
+  if (data.anonymousSession && response.ok) {
+    const { sid, csrfHash, now } = data.anonymousSession;
+    await env.DB.prepare('INSERT INTO admin_sessions (sid_hash, admin_id, csrf_hash, expires_at, created_at) VALUES (?, NULL, ?, ?, ?)')
+      .bind(await sha256(sid), csrfHash, now + SESSION_TTL_SECONDS, now).run();
+  }
   if (response.status === 401 && session?.admin_id) {
     headers.append('Set-Cookie', cookie('', 0));
     await env.DB.prepare('DELETE FROM admin_sessions WHERE sid_hash = ?').bind(await sha256(rawSession)).run();
