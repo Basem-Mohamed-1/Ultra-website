@@ -1,7 +1,6 @@
 const dimensions = {
   '/images/building-plumbing-pipework.webp': [1054, 1400],
   '/images/building-services-installation.webp': [933, 1400],
-  '/images/construction-site-engineer.webp': [2000, 1125],
   '/images/electrical-cable-and-pipeline-systems.webp': [2000, 1333],
   '/images/engineer-commissioning-pump-room.webp': [933, 1400],
   '/images/home-hero-ultra-site-engineer.webp': [2000, 1125],

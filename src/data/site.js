@@ -12,8 +12,8 @@ export const services = [
 ];
 
 export const imageSlots = {
-  intro: '/images/construction-site-engineer.webp', feature: '/images/technician-installing-mechanical-system.webp',
-  projectsHero: '/images/industrial-rooftop-equipment.webp', aboutHero: '/images/construction-site-engineer.webp',
+  intro: '/images/home-hero-ultra-site-engineer.webp', feature: '/images/technician-installing-mechanical-system.webp',
+  projectsHero: '/images/industrial-rooftop-equipment.webp', aboutHero: '/images/home-hero-ultra-site-engineer.webp',
   servicesHero: '/images/mechanical-hvac-pipeline-installation.webp', approachHero: '/images/overhead-mep-services.webp',
   clients: ['/images/client-01.png', '/images/client-02.png', '/images/client-03.png', '/images/client-04.png', '/images/client-05.png'],
 };

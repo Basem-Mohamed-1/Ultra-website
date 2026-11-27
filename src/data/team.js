@@ -1,5 +1,5 @@
 export const teamMembers = [
-  { name: 'Team member name', role: 'Leadership', image: '/images/construction-site-engineer.webp' },
+  { name: 'Team member name', role: 'Leadership', image: '/images/home-hero-ultra-site-engineer.webp' },
   { name: 'Team member name', role: 'Mechanical engineering', image: '/images/engineer-commissioning-pump-room.webp' },
   { name: 'Team member name', role: 'Electrical engineering', image: '/images/mechanical-building-services.webp' },
   { name: 'Team member name', role: 'Project management', image: '/images/mep-engineering-plans-review.webp' },
