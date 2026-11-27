@@ -7,7 +7,7 @@ function decodeBase64Url(value) {
 
 async function hashPassword(password, salt) {
   const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: decodeBase64Url(salt), iterations: 210000 }, material, 256);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: decodeBase64Url(salt), iterations: 100000 }, material, 256);
   return [...new Uint8Array(bits)].map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 

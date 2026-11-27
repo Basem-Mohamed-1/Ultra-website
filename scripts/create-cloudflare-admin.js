@@ -16,6 +16,10 @@ function readHiddenPassword(prompt) {
   });
 }
 
+function shellQuote(value) {
+  return `'${value.replaceAll("'", "'\\''")}'`;
+}
+
 const readline = createInterface({ input: stdin, output: stdout });
 try {
   const email = (await readline.question('Admin email: ')).trim().toLowerCase();
@@ -24,9 +28,10 @@ try {
   if (Buffer.byteLength(password, 'utf8') < 8 || Buffer.byteLength(password, 'utf8') > 72) throw new Error('Password must be between 8 and 72 bytes.');
   if (password !== await readHiddenPassword('Confirm admin password: ')) throw new Error('Passwords did not match.');
   const salt = randomBytes(16).toString('base64url');
-  const hash = pbkdf2Sync(password, Buffer.from(salt, 'base64url'), 210000, 32, 'sha256').toString('hex');
+  const hash = pbkdf2Sync(password, Buffer.from(salt, 'base64url'), 100000, 32, 'sha256').toString('hex');
+  const sql = `INSERT INTO admin_users (email, password_hash) VALUES ('${email.replaceAll("'", "''")}', '${salt}$${hash}') ON CONFLICT(email) DO UPDATE SET password_hash = excluded.password_hash;`;
   console.log('\nRun this command in the project folder to save the account in D1:');
-  console.log(`npx wrangler d1 execute ultra-leads --remote --command "INSERT INTO admin_users (email, password_hash) VALUES ('${email.replaceAll("'", "''")}', '${salt}$${hash}') ON CONFLICT(email) DO UPDATE SET password_hash = excluded.password_hash;"`);
+  console.log(`npx wrangler d1 execute ultra-leads --remote --command ${shellQuote(sql)}`);
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;
