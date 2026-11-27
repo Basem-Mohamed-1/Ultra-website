@@ -9,6 +9,7 @@
 /services-bms.html /services/shop-drawings 301
 
 # Serve the built multi-page files at the clean URLs used throughout the site.
+/ /index.html 200
 /about /about.html 200
 /services /services.html 200
 /services/hvac /services-hvac.html 200
@@ -31,3 +32,4 @@
 /blogs/electrical-infrastructure-works /blogs-electrical-infrastructure-works.html 200
 /approach /approach.html 200
 /admin /admin.html 200
+
