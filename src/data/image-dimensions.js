@@ -22,6 +22,7 @@ const dimensions = {
   '/images/project-plumbing-systems.webp': [1024, 1280],
   '/images/site-engineer-inspection.webp': [935, 1400],
   '/images/technician-installing-mechanical-system.webp': [1054, 1400],
+  '/images/team-leadership-portrait.png': [1070, 1470],
 };
 
 export function imageDimensions(src) {
